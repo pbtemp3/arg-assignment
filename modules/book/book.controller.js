@@ -17,10 +17,22 @@ exports.getBooks = async (_, res) => {
   }
 };
 
-exports.addBook = async (_, res) => {
+exports.addBook = async (req, res) => {
   try {
+    const { name, description, numberOfPages, author, publisher } = req.body;
+    const newData = {
+      id: Math.random(),
+      name,
+      description,
+      numberOfPages,
+      author,
+      publisher,
+    };
+    BOOKS_API_STATIC_DATA.push(newData);
+
     return res.status(STATUS_CODES.SUCCESS).json({
       success: true,
+      insertedData: newData,
     });
   } catch (err) {
     return res.status(STATUS_CODES.SERVER_ERROR).json({
@@ -30,10 +42,16 @@ exports.addBook = async (_, res) => {
   }
 };
 
-exports.deleteBook = async (_, res) => {
+exports.deleteBook = async (req, res) => {
   try {
+    const { bookId } = req.params;
+    const modifiedStaticData = BOOKS_API_STATIC_DATA.filter(
+      (book) => book.id === bookId
+    );
+
     return res.status(STATUS_CODES.SUCCESS).json({
       success: true,
+      data: modifiedStaticData,
     });
   } catch (err) {
     return res.status(STATUS_CODES.SERVER_ERROR).json({
